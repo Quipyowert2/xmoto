@@ -241,16 +241,16 @@ void StatePreplaying::sendFromMessageBox(const std::string &i_id,
     i_db->read_DB_free(v_result);
     m_requestForEnd = true;
     SysMessage::instance()->displayError(SYS_MSG_UNABLE_TO_BUILD_THE_REPORT);
+  } else {
+    // read data
+    if (i_db->getResult(v_result, 2, 0, 0) != NULL) {
+      v_name = i_db->getResult(v_result, 2, 0, 0);
+    }
+    if (i_db->getResult(v_result, 2, 0, 1) != NULL) {
+      v_sum = i_db->getResult(v_result, 2, 0, 1);
+    }
+    i_db->read_DB_free(v_result);
   }
-
-  // read data
-  if (i_db->getResult(v_result, 2, 0, 0) != NULL) {
-    v_name = i_db->getResult(v_result, 2, 0, 0);
-  }
-  if (i_db->getResult(v_result, 2, 0, 1) != NULL) {
-    v_sum = i_db->getResult(v_result, 2, 0, 1);
-  }
-  i_db->read_DB_free(v_result);
 
   if (m_idlevel == "" || v_name == "" || v_sum == "") {
     m_requestForEnd = true;
@@ -258,7 +258,7 @@ void StatePreplaying::sendFromMessageBox(const std::string &i_id,
   }
 
   // send the message
-  v_rptmsg = "Dear admins,\nThe level named " + m_idlevel +
+  v_rptmsg = "Dear admins,\nThe level named " + v_name +
              "\n(id=" + m_idlevel + ", md5=" + v_sum +
              "),\ncrashed with the following error :\n" + m_errorLoading;
   StateManager::instance()->replaceState(
